@@ -1,0 +1,211 @@
+window{
+    background-image: linear-gradient(#adffa5, #49c79c, #7f49c7);
+}
+
+button#MENU {
+    font-size: 32px;
+    margin: 0 8px 20px 8px;
+    border: 5px solid #8406b9;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+button:hover#MENU {
+    color: #2f4771;
+    background-image: linear-gradient(#e4e4d9, #c16c11);
+    border-style: dashed;
+}
+
+label#NEW_TAB{
+    font-size: 28px;
+    margin: 35px 0 10px 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+button#STARTGAME{
+    color: #00aa00;
+    margin: 60px 8px 20px 8px;
+    font-size: 32px;
+}
+
+button:hover#STARTGAME{
+    background-image: linear-gradient(#a1ffce, #a1ffff);
+    color: black;
+}
+
+button#NEW_TAB{
+    margin: 20px 8px 0 8px;
+    font-size: 24px;
+    font-family: "Lucida Console", "Courier New", monospace;
+    border: 5px solid rgba(0, 0, 0, 0);
+}
+
+button:hover#NEW_TAB{
+    border: 5px dashed #ccff00;
+}
+
+entry#NEW_TAB{
+    margin: 20px 8px 0 8px;
+    font-size: 32px;
+}
+
+button#NEW_TAB_SELECTED{
+    border: 5px dashed #006060;
+    color: #006060;
+    margin: 20px 8px 0 8px;
+    font-size: 24px;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+label#error{
+    font-size: 24px;
+    color: rgb(187, 255, 0);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-weight: bold;
+}
+
+label#GAME_TAB_NAME_RED{
+    font-size: 28px;
+    font-weight: bold;
+    font-family: 'Brush Script MT', cursive;
+    color: #ff6161;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 5px;
+}
+
+label#GAME_TAB_NAME_YELLOW{
+    font-size: 28px;
+    font-weight: bold;
+    font-family: 'Brush Script MT', cursive;
+    color: #5337ff;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 5px;
+}
+
+label#GAME_TAB_NAME{
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Brush Script MT', cursive;
+    color: #77ff61;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 5px 0 30px 0;
+}
+
+label#NOW_PLAYING{
+    color:black;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 5px;
+    border: 1px solid #8406b9;
+    margin: 35px 0 0 0;
+    border-radius: 4px;
+}
+
+label#GAME_TAB_VS{
+    color: white;
+    font-size: 40px;
+    background-image: linear-gradient(#7f49c7, #49c79c, #adffa5);
+    border-radius: 40px;
+    padding: 5px;
+    margin: 10px 0 0 5px;
+    font-weight: bold;
+}
+
+label#GAME_TAB_SCORE{
+    color: black;
+    font-size: 14px;
+    padding: 5px;
+    border: 2px dotted black;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+button#GAME_TAB{
+    padding: 0 85px 0 85px;
+    margin: 0 0 10px 0;
+}
+
+button#GAME_TAB:hover{
+    color: blue;
+}
+
+button#exitbutton{
+    padding: 0 40px 0 40px;
+    margin: 0 0 10px 0;
+    background-image: linear-gradient(#ca9f9b, #e7692e);
+    color: white;
+}
+
+button#exitbutton:hover{
+    padding: 0 40px 0 40px;
+    margin: 0 0 10px 0;
+    background-image: linear-gradient(#ffffff, #ffffff);
+    color: black;
+}
+
+label#SCORE{
+    font-size: 20px;
+    padding: 5px 40px 5px 40px;
+    color: black;
+    margin: 0px 0 5px 0;
+    font-weight: bold;
+}
+
+label#SCORE_TITLE{
+    font-size: 26px;
+    padding: 5px 40px 5px 40px;
+    color: #2f4771;
+    margin: 0px 0 5px 0;
+    font-weight: bold;
+}
+
+button#GAMEBUTTON {
+    background-image: linear-gradient(#adffa5, #49c79c, #7f49c7);
+}
+
+button#GAMEBUTTON:hover{
+    background-image: linear-gradient(#ffff00, #ffff00);
+}
+
+#GameTable{
+    margin: 10px;
+}
+
+#LOGO{
+    background-image: linear-gradient(#adffa5, #adffa5);
+}
+
+button#SAVELoad{
+    font-size: 36px;
+    padding: 35px 240px 35px 240px;
+    margin: 5px;
+    background-image: linear-gradient(#B06AB3, #0575E6, #B06AB3);
+    color: white;
+    border: 5px solid #000000;
+}
+
+button#SAVELoad:hover{
+    background-image: linear-gradient(#e4e4d9, #e4e4d9);
+    color: black;
+
+}
+
+label#SAVELoad{
+    font-size: 32px;
+    margin: 10px;
+    color: wheat;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-weight: bold;
+}
+
+label#TIME{
+    font-size: 18px;
+    color: wheat;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0 25px 0 25px;
+}
