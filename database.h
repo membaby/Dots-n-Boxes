@@ -3,29 +3,9 @@
 #include <sqlite3.h>
 #include <string.h>
 #include <ctype.h>
+#include "variables.h"
 
-const char DBNAME[] = "storage.db";
-// game_level: (2) Beginner, (5) Expert
-// game_mode: (1) Single, (2) Multiplayer
-
-// INTEGER VARIABLES
-int nowPlayingBIT=0, boxesY=0, boxesX=0, game_bits_size = 0, game_in_progress = 0, game_level, game_mode, game_bits[250][250], backgroundMusic = 1;
-int loading = 0;
-int game_time = 0;
-// PLAY DATA
-int storedMoves_INDEX = -1;
-int undoRedoCursor = -1;
-int storedMoves[100][100][100];
-int playingHistory[100];
-int max_redo = 0;
-int change_score=0;
-
-GtkWidget *game[100][100], *Boxes[20][20];
-int redoundo = 0;
-//
-
-sqlite3 *db;
-
+// Initalize a STRUCTURE to store data of the players and the winner
 struct player {
     int currentScore;
     int bestScore;
@@ -33,6 +13,8 @@ struct player {
     int moves;
 } player1, player2, winner;
 
+// Input: Player Name (Case Insensitive)
+// Output: Returns INT score of player from database
 int getScore(char *name){
     sqlite3_open(DBNAME, &db);
     sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS scores(name text, score int);", 0, 0, 0);
@@ -46,6 +28,8 @@ int getScore(char *name){
     return score;
 }
 
+// Input: Player Name & Score
+// Output: Updates score of player in database if new score is higher than best score.
 void updateScore(char *name, int score){
     sqlite3_open(DBNAME, &db);
     sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS scores(name text, score int);", 0, 0, 0);
@@ -66,6 +50,8 @@ void updateScore(char *name, int score){
     sqlite3_exec(db, "END TRANSACTION;", 0, 0, 0);
 }
 
+// Input: Slot ID and Game Settings
+// Output: Game is saved to database.
 void saveGame(int id, int gamelevel, char array[], int nowPlaying){
     sqlite3_open(DBNAME, &db);
     sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS `game` (id INT NOT NULL, difficulity INT, player1 TEXT, player2 TEXT, array TEXT, playingBIT INT, gametime INT, PRIMARY KEY (`id`));", 0, 0, 0);
@@ -73,13 +59,16 @@ void saveGame(int id, int gamelevel, char array[], int nowPlaying){
     sqlite3_exec(db, "INSERT INTO `game` VALUES (2, 0, '0', '0', '0', 0, 0)", 0, 0, 0);
     sqlite3_exec(db, "INSERT INTO `game` VALUES (3, 0, '0', '0', '0', 0, 0)", 0, 0, 0);
     char query[500];
-    sprintf(query, "UPDATE `game` SET difficulity=%d, player1='%s', player2='%s', array='%s', playingBIT=%d, gametime=%d WHERE id=%d", gamelevel, player1.name, player2.name, array, nowPlaying, game_time, id);
-
+    sprintf(query, "UPDATE `game` SET difficulity=%d, player1='%s', player2='%s', array='%s', playingBIT=%d, gametime=%d WHERE id=%d",
+            gamelevel, player1.name, player2.name, array, nowPlaying, game_time, id);
     logging("DEBUG", query);
     sqlite3_exec(db, query, 0, 0, 0);
     sqlite3_exec(db, "END TRANSACTION;", 0, 0, 0);
+    logging("DEBUG", "Game has been saved!");
 }
 
+// Input: Slot ID
+// Output: Loads and starts game saved in slot
 int loadGame(int id){
     sqlite3_open(DBNAME, &db);
     char query[200];
@@ -136,9 +125,12 @@ int loadGame(int id){
     sqlite3_finalize(stmt);
     loading = 0;
     redoundo = 0;
+    logging("DEBUG", "Game has been loaded!");
     return 1;
 }
 
+// Input: Player Name
+// Output: Player name with title case to be used in sql queries to stop case sensitivity.
 void title_case(char *s)
 {
     if (s == NULL) return;
@@ -146,6 +138,9 @@ void title_case(char *s)
         *p = (p == s || *(p-1) == ' ') ? toupper(*p) : tolower(*p);
 }
 
+// Updates data in `player` sruct to match current game settings.
+// Input: Players Names
+// Output: Player1 and Player2 are loaded with new data.
 void createPlayer(char *player1_name, char *player2_name){
     char p1name[200], p2name[200];
     sprintf(p1name, "%s", player1_name);

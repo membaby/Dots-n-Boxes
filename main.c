@@ -1,24 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <gtk/gtk.h>
 #include "utilities.h"
 
-const char BOTNAME[] = "EmbaBy85 Robot";
-
+// Turn music ON/OFF
+// Works when the user clicks on speaker button to toggle music.
 void toggleMusic(GtkWidget *widget, int x){
     if (backgroundMusic) {
         backgroundMusic = 0;
         gtk_label_set_text(displayMessage, "Turning off music... please wait!");
+        logging("DEBUG", "Music is turning off...");
     } else {
         backgroundMusic = 1;
         gtk_label_set_text(displayMessage, "");
         pthread_create(&musicThread, NULL, play_music, 1);
         GtkWidget *image = gtk_image_new_from_file("Images/logo.png");
         gtk_button_set_image(logo, image);
+        logging("DEBUG", "Music is turned on");
     }
 }
 
-int cont = 0;
+// Navigation Menu Buttons Functions Callbacks
 void Menu_Button_Click(GtkWidget *widget, gpointer data){
     if (gtk_widget_is_visible(frame_new)) gtk_widget_hide(frame_new);
     if (gtk_widget_is_visible(frame_load)) gtk_widget_hide(frame_load);
@@ -26,7 +25,7 @@ void Menu_Button_Click(GtkWidget *widget, gpointer data){
     if (gtk_widget_is_visible(frame_top)) gtk_widget_hide(frame_top);
     if (gtk_widget_is_visible(frame_game)) gtk_widget_hide(frame_game);
 
-    if (data == 0 && !cont){
+    if (data == 0 && !continueButton){
         gtk_widget_show(frame_new);
         logging("INFO", "User clicked on NEW GAME button.");
         stopGame();
@@ -35,14 +34,14 @@ void Menu_Button_Click(GtkWidget *widget, gpointer data){
         logging("INFO", "User clicked on LOAD GAME button.");
         if (game_in_progress){
             gtk_button_set_label(GTK_BUTTON(btn_new), "CONTINUE");
-            cont = 1;
+            continueButton = 1;
         }
     } else if (data == 2){
         gtk_widget_show(frame_save);
         logging("INFO", "User clicked on SAVE GAME button.");
         if (game_in_progress){
             gtk_button_set_label(GTK_BUTTON(btn_new), "CONTINUE");
-            cont = 1;
+            continueButton = 1;
         }
     } else if (data == 3){
         logging("INFO", "User clicked on TOP 10 button.");
@@ -65,7 +64,7 @@ void Menu_Button_Click(GtkWidget *widget, gpointer data){
         logging("DEBUG", "TOP 10 list successfully retrieved");
         if (game_in_progress){
             gtk_button_set_label(GTK_BUTTON(btn_new), "CONTINUE");
-            cont = 1;
+            continueButton = 1;
         }
     } else if (data == 4){
         char row[1000];
@@ -80,13 +79,14 @@ void Menu_Button_Click(GtkWidget *widget, gpointer data){
         updateGameInfo(0);
         gtk_widget_show(frame_game);
         gtk_button_set_label(GTK_BUTTON(btn_new), "NEW GAME");
-    } else if (cont){
+    } else if (continueButton){
         gtk_widget_show(frame_game);
         gtk_button_set_label(GTK_BUTTON(btn_new), "NEW GAME");
-        cont = 0;
+        continueButton = 0;
     }
 }
 
+// Callback function for Save and Load buttons.
 void SaveLoad_Button_Click(GtkWidget *widget, gpointer data){
     char log[70];
     if (data < 4){ // SAVE
@@ -123,32 +123,38 @@ void SaveLoad_Button_Click(GtkWidget *widget, gpointer data){
     logging("INFO", log);
 }
 
-
+// Visual Representation of user choices.
+// Changes colors of selected buttons to show selected choice.
 void Selection_Click(GtkWidget *widget,gpointer data){
     if (data == 0){
         gtk_widget_set_name(btn_beginner, "NEW_TAB_SELECTED");
         gtk_widget_set_name(btn_expert, "NEW_TAB");
+        logging("DEBUG", "Player selected BEGINNER game level");
         game_level = 2;
     } else if (data == 1){
         gtk_widget_set_name(btn_beginner, "NEW_TAB");
         gtk_widget_set_name(btn_expert, "NEW_TAB_SELECTED");
+        logging("DEBUG", "Player selected EXPERT game level");
         game_level = 5;
     } else if (data == 2){
         gtk_widget_set_name(btn_single, "NEW_TAB_SELECTED");
         gtk_widget_set_name(btn_multiplayer, "NEW_TAB");
         gtk_entry_set_text(textbox_p2, BOTNAME);
         gtk_widget_set_sensitive(textbox_p2, FALSE);
+        logging("DEBUG", "Player selected SINGLE game mode");
         game_mode = 1;
     } else if (data == 3){
         gtk_widget_set_name(btn_single, "NEW_TAB");
         gtk_widget_set_name(btn_multiplayer, "NEW_TAB_SELECTED");
         gtk_entry_set_text(textbox_p2, "");
         gtk_widget_set_sensitive(textbox_p2, TRUE);
+        logging("DEBUG", "Player selected MULTIPLAYER game mode");
         game_mode = 2;
     }
 }
 
-void startTimer(){
+// Called every second when a game in progress to update displayed time.
+void timer(){
     if (game_in_progress)
         game_time += 1;
     int mins = game_time / 60;
@@ -158,6 +164,8 @@ void startTimer(){
     gtk_label_set_text(lbl_time, time);
 }
 
+
+// Main GTK Window Intialization
 int main(){
     logging("DEBUG", "Initializing game window");
     gtk_init(NULL, NULL);
@@ -210,7 +218,6 @@ int main(){
     gtk_table_attach(GTK_TABLE(table), displayMessage, 0, 4, 2, 3, 1, 4, GTK_FILL, 0);
 
     // "SAVE GAME" TAB
-    GtkWidget *table_save, *label_title_save, *btn_save1, *btn_save2, *btn_save3;
     table_save = gtk_table_new(4, 1, 0);
     label_title_save = gtk_label_new("CHOOSE A SLOT TO SAVE THE GAME");
     btn_save1 = gtk_button_new_with_mnemonic("Slot 1");
@@ -229,7 +236,6 @@ int main(){
     gtk_container_add(frame_save, table_save);
 
     // "LOAD GAME" TAB
-    GtkWidget *table_load, *label_title_load, *btn_load1, *btn_load2, *btn_load3;
     table_load = gtk_table_new(4, 1, 0);
     label_title_load = gtk_label_new("CHOOSE A SLOT TO LOAD A GAME");
     btn_load1 = gtk_button_new_with_mnemonic("Slot 1");
@@ -350,8 +356,6 @@ int main(){
     gtk_table_attach(GTK_TABLE(game_ltable), btn_redo,              0, 1, 10, 11, 1, 4, 0, 0);
 
     // TOP 10 TAB
-    GtkWidget *top10_table;
-
     top10_table = gtk_table_new(10, 3, 0);
     gtk_container_add(frame_top, top10_table);
 
@@ -401,8 +405,8 @@ int main(){
     gdk_window_set_cursor(gtk_widget_get_window(window), c);
 
     logging("INFO", "GUI successfully created.");
-    pthread_create(&musicThread, NULL, play_music, 1);
-    g_timeout_add(1000, startTimer, NULL);
+    pthread_create(&musicThread, NULL, play_music, 1);  // Turns on music on another thread
+    g_timeout_add(1000, timer, NULL); // Calls timer() function every 1 sec
     gtk_main();
     return 0;
 }

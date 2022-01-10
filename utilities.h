@@ -1,23 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "database.h"
 #include "logging.h"
-#include <gtk/gtk.h>
 #include <stdbool.h>
 #include <conio.h>
 #include <time.h>
-#include <pthread.h>
-
-// GTKWidget VARIABLES
-GtkWidget *window, *table, *logo, *displayMessage, *btn_new, *btn_load, *btn_save, *btn_top10, *lbl_remaining_bricks, *lbl_time;
-GtkWidget *frame_new, *frame_load, *frame_save, *frame_top, *frame_game, *frame_new_table, *logo2;
-GtkWidget *label_level, *label_mode, *label_p1, *label_p2, *btn_beginner, *btn_expert, *btn_single, *btn_multiplayer, *btn_start;
-GtkWidget *textbox_p1, *textbox_p2, *game_main_table, *game_ltable, *game_rtable, *game_lframe, *game_rframe;
-GtkWidget *lbl_NAME1, *lbl_NAME2, *lbl_SCORE1, *lbl_SCORE2, *lbl_turn, *lbl_turn_title, *btn_undo, *btn_redo, *lbl_VS, *top10_scores[12], *top10_names[12];
-
-pthread_t musicThread, timerThread;
 
 // FUNCTIONS
+
+// Loads external CSS file to GTK window.
 static void load_css(void){
     GtkCssProvider *provider;
     GdkDisplay *display;
@@ -33,6 +22,10 @@ static void load_css(void){
     g_object_unref(provider);
 }
 
+// Play Music on start and on demand
+// Input: 
+// i = 1 -> Background Music
+// i = 2 -> Click Music
 void play_music(int i) {
     if (i == 1){
         while (backgroundMusic) {
@@ -47,6 +40,7 @@ void play_music(int i) {
     }
 }
 
+// Saves data for each move to be recalled when using REDO and UNDO
 void storeMove(){
     storedMoves_INDEX += 1;
     undoRedoCursor += 1;
@@ -59,6 +53,11 @@ void storeMove(){
     else playingHistory[storedMoves_INDEX] = 0;
 }
 
+// Undo and Redo functions
+// Input: 
+// Widget - GTK widget.
+// undo = 0 -> REDO
+// undo = 1 -> UNDO
 void undoRedo(GtkWidget *widget, int undo){
     if (!game_in_progress && undo){
         Menu_Button_Click(btn_new, 0);
@@ -117,6 +116,11 @@ void undoRedo(GtkWidget *widget, int undo){
     redoundo = 0;
 }
 
+// Show Main Menu and Exit Game buttons when the game finishes
+// Or Undo and Redo buttons during game
+// INPUT
+// visible = 0 -> Undo & Redo
+// visible = 1 -> Main Menu & Exit
 void ExitButton(int visible){
     if (visible == 1){
         gtk_button_set_label(GTK_BUTTON(btn_undo), "Main Menu");
@@ -131,6 +135,9 @@ void ExitButton(int visible){
     }
 }
 
+// Updates game labels to show correct names, scores and turns.
+// INPUT
+// stop = 1 -> Stops the game and announces the winner.
 void updateGameInfo(int stop){
     char player1SCORE[200], player2SCORE[200], play1[200], play2[200], nowP[200], remaining_bricks[50];
     if (player1.currentScore > player1.bestScore) player1.bestScore = player1.currentScore;
@@ -173,8 +180,8 @@ void updateGameInfo(int stop){
     }
 }
 
-bool IntelliBot = FALSE;
-
+// Updates the game and choose the next player turn
+// Performs the computer's turn using a random algorithm when the turn is for the bot.
 void nextTurn(){
     if (!game_in_progress || loading) return;
     if (nowPlayingBIT){
@@ -224,6 +231,7 @@ void nextTurn(){
     storeMove();
 }
 
+// Destroys the game objects, return variables to initial values and prepare for another game to start
 void stopGame(){
     GList *children, *iter;
     children = gtk_container_get_children(GTK_TABLE(game_rtable));
@@ -243,6 +251,7 @@ void stopGame(){
     change_score=0;
 }
 
+// Toggles the brick clicked by user, checks for full boxes, manages coloring of the game.
 void toggleBrick(GtkWidget *widget, int x){
     int y = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "y"));
     if ((game_bits[y][x] == 1 || game_bits[y][x] == 2) && redoundo){
@@ -332,6 +341,7 @@ void toggleBrick(GtkWidget *widget, int x){
     else change_score = 0;
 }
 
+// Creates game grid using GTK buttons and images according user selections on the window.
 void createGame(){
     if (!loading){
         int p1_ = gtk_entry_get_text_length(GTK_ENTRY(textbox_p1));

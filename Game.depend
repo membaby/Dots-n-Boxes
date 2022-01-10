@@ -3041,32 +3041,30 @@
 	<time.h>
 	<pthread.h>
 
-1641774288 source:d:\edu\cse-programming\game\main.c
-	<stdio.h>
-	<stdlib.h>
-	<gtk/gtk.h>
+1641792028 source:d:\edu\cse-programming\game\main.c
 	"utilities.h"
 
-1641786053 d:\edu\cse-programming\game\utilities.h
-	<stdio.h>
-	<stdlib.h>
+1641791122 d:\edu\cse-programming\game\utilities.h
 	"database.h"
 	"logging.h"
-	<gtk/gtk.h>
 	<stdbool.h>
 	<conio.h>
 	<time.h>
-	<pthread.h>
 
-1641763051 d:\edu\cse-programming\game\database.h
+1641792158 d:\edu\cse-programming\game\database.h
 	<stdio.h>
 	<stdlib.h>
 	<sqlite3.h>
 	<string.h>
 	<ctype.h>
+	"variables.h"
 
-1641779194 d:\edu\cse-programming\game\logging.h
+1641787677 d:\edu\cse-programming\game\logging.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
+
+1641791746 d:\edu\cse-programming\game\variables.h
+	<gtk/gtk.h>
+	<pthread.h>
 
